@@ -1,0 +1,334 @@
+
+ <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GeoSense+ | AI-Powered Urban Analytics</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.25.0/maps/maps.css"
+    />
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <div class="logo">
+          <h1>🌍 GeoSense+</h1>
+          <p class="tagline">AI-Powered Urban Intelligence</p>
+        </div>
+        <nav>
+          <button class="nav-btn active" data-section="home">Home</button>
+          <button class="nav-btn" data-section="dashboard">Dashboard</button>
+          <button class="nav-btn" data-section="map">Live Map</button>
+          <button class="nav-btn" data-section="community">Community</button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      <section id="home-section" class="section active">
+        <div class="hero">
+          <h2>Discover Smarter, Greener Cities</h2>
+          <p class="ai-insight" id="main-insight">Loading AI insights...</p>
+        </div>
+
+        <div class="quick-actions">
+          <div class="action-card" onclick="showSection('dashboard')">
+            <div class="card-icon">🌿</div>
+            <h3>Check Air Quality</h3>
+            <p>Real-time AQI, noise & traffic</p>
+          </div>
+          <div class="action-card" onclick="showRouteModal()">
+            <div class="card-icon">🚗</div>
+            <h3>Find Low-Traffic Routes</h3>
+            <p>AI-powered eco-friendly paths</p>
+          </div>
+          <div class="action-card" onclick="showSection('dashboard')">
+            <div class="card-icon">🏅</div>
+            <h3>Carbon Credit Score</h3>
+            <p>Track your green impact</p>
+          </div>
+        </div>
+
+        <div class="location-input-section">
+          <h3>Analyze Your Location</h3>
+          <div class="input-group">
+            <input
+              type="text"
+              id="location-input"
+              placeholder="Enter location or use GPS"
+            />
+            <button onclick="getCurrentLocation()">📍 Use GPS</button>
+            <button onclick="analyzeLocation()" class="primary-btn">
+              Analyze
+            </button>
+          </div>
+        </div>
+
+        <div
+          id="analysis-results"
+          class="analysis-results"
+          style="display: none"
+        >
+          <h3>📊 Location Analysis Results</h3>
+          <div id="analysis-content"></div>
+        </div>
+      </section>
+
+      <section id="dashboard-section" class="section">
+        <h2>🌿 Your Eco-Dashboard</h2>
+
+        <div class="user-stats">
+          <div class="stat-card">
+            <h4>Green Score</h4>
+            <div class="circular-gauge">
+              <svg viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" class="gauge-bg"></circle>
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="45"
+                  class="gauge-fill"
+                  id="green-score-gauge"
+                ></circle>
+                <text x="50" y="55" class="gauge-text" id="green-score-text">
+                  0
+                </text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <h4>Air Quality Index</h4>
+            <div class="circular-gauge">
+              <svg viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" class="gauge-bg"></circle>
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="45"
+                  class="gauge-fill aqi-gauge"
+                  id="aqi-gauge"
+                ></circle>
+                <text x="50" y="55" class="gauge-text" id="aqi-text">0</text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <h4>Noise Level</h4>
+            <div class="circular-gauge">
+              <svg viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" class="gauge-bg"></circle>
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="45"
+                  class="gauge-fill noise-gauge"
+                  id="noise-gauge"
+                ></circle>
+                <text x="50" y="55" class="gauge-text" id="noise-text">0</text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <h4>Traffic Level</h4>
+            <div class="circular-gauge">
+              <svg viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" class="gauge-bg"></circle>
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="45"
+                  class="gauge-fill traffic-gauge"
+                  id="traffic-gauge"
+                ></circle>
+                <text x="50" y="55" class="gauge-text" id="traffic-text">
+                  0
+                </text>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="impact-stats">
+          <div class="impact-card">
+            <h4>🌱 CO₂ Saved</h4>
+            <p class="impact-value" id="co2-saved">0 kg</p>
+          </div>
+          <div class="impact-card">
+            <h4>🚶 Clean Trips</h4>
+            <p class="impact-value" id="clean-trips">0</p>
+          </div>
+          <div class="impact-card">
+            <h4>🔥 Eco Streak</h4>
+            <p class="impact-value" id="eco-streak">0 days</p>
+          </div>
+          <div class="impact-card">
+            <h4>⭐ Eco Points</h4>
+            <p class="impact-value" id="eco-points">0</p>
+          </div>
+        </div>
+
+        <div class="badges-section">
+          <h3>🏆 Your Badges</h3>
+          <div id="badges-container" class="badges-grid"></div>
+        </div>
+      </section>
+
+      <section id="map-section" class="section">
+        <div class="map-controls">
+          <h2>🗺️ Live Urban Map</h2>
+          <div class="mode-toggle">
+            <button class="mode-btn active" data-mode="citizen">
+              👥 Citizen Mode
+            </button>
+            <button class="mode-btn" data-mode="expert">🔬 Expert Mode</button>
+          </div>
+        </div>
+
+        <div id="map" class="map-container"></div>
+
+        <div class="map-legend" id="citizen-legend">
+          <h4>Map Legend</h4>
+          <div class="legend-item">
+            <span class="legend-color busy">🚗</span> Busy Areas
+          </div>
+          <div class="legend-item">
+            <span class="legend-color moderate">🌿</span> Calm Zones
+          </div>
+          <div class="legend-item">
+            <span class="legend-color pollution">😷</span> High Pollution
+          </div>
+        </div>
+
+        <div
+          class="map-legend expert-legend"
+          id="expert-legend"
+          style="display: none"
+        >
+          <h4>Expert Controls</h4>
+          <label
+            ><input type="checkbox" checked data-layer="traffic-flow" /> Traffic
+            Flow</label
+          >
+          <label
+            ><input type="checkbox" checked data-layer="traffic-incidents" />
+            Traffic Incidents</label
+          >
+          <label
+            ><input type="checkbox" data-layer="poi-clusters" /> POI
+            Clusters</label
+          >
+        </div>
+      </section>
+
+      <section id="community-section" class="section">
+        <h2>💬 Community Space</h2>
+
+        <div class="community-header">
+          <button onclick="showPostModal()" class="primary-btn">
+            + Share Your Insight
+          </button>
+        </div>
+
+        <div class="community-feed" id="community-feed">
+          <p>Loading community posts...</p>
+        </div>
+
+        <div class="leaderboard">
+          <h3>🏆 Top Eco-Commuters</h3>
+          <div id="leaderboard-list"></div>
+        </div>
+      </section>
+    </main>
+
+    <div class="chatbot-container">
+      <button class="chatbot-toggle" onclick="toggleChatbot()">💬</button>
+      <div class="chatbot-window" id="chatbot-window" style="display: none">
+        <div class="chatbot-header">
+          <h3>🤖 GeoSense+ Assistant</h3>
+          <button onclick="toggleChatbot()">✕</button>
+        </div>
+        <div class="chatbot-messages" id="chatbot-messages">
+          <div class="bot-message">
+            Hi! I'm your eco-assistant. Ask me about clean routes, air quality,
+            or eco-points! 🌿
+          </div>
+        </div>
+        <div class="chatbot-input">
+          <input
+            type="text"
+            id="chatbot-input"
+            placeholder="Ask me anything..."
+            onkeypress="if(event.key==='Enter') sendChatMessage()"
+          />
+          <button onclick="sendChatMessage()">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="route-modal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeRouteModal()">&times;</span>
+        <h2>🚗 Plan Eco-Friendly Route</h2>
+        <div class="route-form">
+          <input
+            type="text"
+            id="start-location"
+            placeholder="Start location (or use GPS)"
+          />
+          <input type="text" id="end-location" placeholder="Destination" />
+          <div class="route-options">
+            <label
+              ><input type="radio" name="route-type" value="eco" checked />
+              Eco-Friendly</label
+            >
+            <label
+              ><input type="radio" name="route-type" value="fastest" />
+              Fastest</label
+            >
+          </div>
+          <button onclick="planRoute()" class="primary-btn">Find Route</button>
+        </div>
+        <div id="route-results"></div>
+      </div>
+    </div>
+
+    <div id="post-modal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closePostModal()">&times;</span>
+        <h2>Share Your Insight</h2>
+        <div class="post-form">
+          <input type="text" id="post-title" placeholder="Title" />
+          <textarea
+            id="post-content"
+            placeholder="Share your eco-discovery..."
+          ></textarea>
+          <input type="text" id="post-location" placeholder="Location" />
+          <select id="post-type">
+            <option value="eco_route">Eco Route</option>
+            <option value="eco_zone">Eco Zone</option>
+            <option value="alert">Traffic Alert</option>
+            <option value="general">General</option>
+          </select>
+          <button onclick="submitPost()" class="primary-btn">Post</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.25.0/maps/maps-web.min.js"></script>
+    <script src="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.25.0/services/services-web.min.js"></script>
+    <script>
+      const TOMTOM_API_KEY = "{{ tomtom_key }}";
+    </script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  </body>
+</html>
+{% endcomment %}

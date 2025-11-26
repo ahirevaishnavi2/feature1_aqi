@@ -1,0 +1,2780 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gyatah | Where Motion is Intelligent</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.25.0/maps/maps.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #2e7d32;
+        --primary-light: #4caf50;
+        --primary-dark: #1b5e20;
+        --secondary: #1976d2;
+        --secondary-light: #42a5f5;
+        --secondary-dark: #0d47a1;
+        --accent: #ff9800;
+        --accent-light: #ffb74d;
+        --accent-dark: #f57c00;
+        --light-bg: #f5f7fa;
+        --light-card: #ffffff;
+        --light-text: #333333;
+        --light-border: #e0e0e0;
+        --dark-bg: #121212;
+        --dark-card: #1e1e1e;
+        --dark-text: #e0e0e0;
+        --dark-border: #333333;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        --shadow-dark: 0 10px 30px rgba(0, 0, 0, 0.3);
+        --radius: 16px;
+        --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        --glass-bg: rgba(255, 255, 255, 0.1);
+        --glass-border: rgba(255, 255, 255, 0.2);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background-color: var(--light-bg);
+        color: var(--light-text);
+        transition: var(--transition);
+        overflow-x: hidden;
+        line-height: 1.6;
+      }
+
+      body.dark-mode {
+        background-color: var(--dark-bg);
+        color: var(--dark-text);
+      }
+
+      /* Animated Background */
+      .animated-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        overflow: hidden;
+      }
+
+      .bg-circle {
+        position: absolute;
+        border-radius: 50%;
+        background: linear-gradient(
+          135deg,
+          var(--primary-light),
+          var(--secondary-light)
+        );
+        opacity: 0.1;
+        animation: float 20s infinite linear;
+      }
+
+      .bg-circle:nth-child(1) {
+        width: 300px;
+        height: 300px;
+        top: 10%;
+        left: 5%;
+        animation-delay: 0s;
+      }
+
+      .bg-circle:nth-child(2) {
+        width: 200px;
+        height: 200px;
+        top: 60%;
+        left: 80%;
+        animation-delay: 5s;
+      }
+
+      .bg-circle:nth-child(3) {
+        width: 400px;
+        height: 400px;
+        top: 40%;
+        left: 40%;
+        animation-delay: 10s;
+      }
+
+      .bg-circle:nth-child(4) {
+        width: 150px;
+        height: 150px;
+        top: 80%;
+        left: 10%;
+        animation-delay: 15s;
+      }
+
+      @keyframes float {
+        0% {
+          transform: translate(0, 0) rotate(0deg);
+        }
+        33% {
+          transform: translate(30px, -50px) rotate(120deg);
+        }
+        66% {
+          transform: translate(-20px, 20px) rotate(240deg);
+        }
+        100% {
+          transform: translate(0, 0) rotate(360deg);
+        }
+      }
+
+      .container {
+        max-width: 1300px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      /* Header Styles - FIXED */
+      header {
+        padding: 15px 0; /* Reduced from 25px */
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 1000;
+        transition: var(--transition);
+        background: rgba(255, 255, 255, 0.95); /* Increased opacity */
+        backdrop-filter: blur(10px);
+        box-shadow: var(--shadow);
+      }
+
+      .dark-mode header {
+        background: rgba(30, 30, 30, 0.95); /* Increased opacity */
+        box-shadow: var(--shadow-dark);
+      }
+
+      .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px; /* Reduced from 15px */
+      }
+
+      .logo-icon {
+        width: 45px; /* Reduced from 50px */
+        height: 45px; /* Reduced from 50px */
+        background: var(--primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.4rem; /* Reduced from 1.5rem */
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+      }
+
+      .logo:hover .logo-icon {
+        transform: rotate(15deg) scale(1.1);
+      }
+
+      .logo-text {
+        font-size: 1.6rem; /* Reduced from 1.8rem */
+        font-weight: 700;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 25px; /* Reduced from 30px */
+      }
+
+      .nav-link {
+        color: var(--light-text);
+        text-decoration: none;
+        font-weight: 500;
+        position: relative;
+        transition: var(--transition);
+        padding: 8px 0; /* Reduced from 10px */
+        cursor: pointer;
+        font-size: 0.95rem; /* Added for consistency */
+      }
+
+      .dark-mode .nav-link {
+        color: var(--dark-text);
+      }
+
+      .nav-link:after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: 0;
+        left: 0;
+        background: var(--primary);
+        transition: var(--transition);
+      }
+
+      .nav-link:hover {
+        color: var(--primary);
+      }
+
+      .nav-link:hover:after {
+        width: 100%;
+      }
+
+      .nav-link.active {
+        color: var(--primary);
+      }
+
+      .nav-link.active:after {
+        width: 100%;
+      }
+
+      .mode-toggle {
+        display: flex;
+        align-items: center;
+        gap: 12px; /* Reduced from 15px */
+        background: var(--light-card);
+        padding: 10px 18px; /* Reduced from 12px 20px */
+        border-radius: 50px;
+        box-shadow: var(--shadow);
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .dark-mode .mode-toggle {
+        background: var(--dark-card);
+        box-shadow: var(--shadow-dark);
+      }
+
+      .toggle-label {
+        font-weight: 600;
+        font-size: 0.85rem; /* Reduced from 0.9rem */
+      }
+
+      .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 55px; /* Reduced from 60px */
+        height: 28px; /* Reduced from 30px */
+      }
+
+      .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--primary);
+        transition: var(--transition);
+        border-radius: 34px;
+      }
+
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 20px; /* Reduced from 22px */
+        width: 20px; /* Reduced from 22px */
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: var(--transition);
+        border-radius: 50%;
+      }
+
+      input:checked + .slider {
+        background-color: var(--secondary);
+      }
+
+      input:checked + .slider:before {
+        transform: translateX(27px); /* Adjusted for smaller width */
+      }
+
+      main {
+        padding: 100px 0 60px; /* Reduced top padding from 140px */
+        min-height: 100vh;
+      }
+
+      .section {
+        display: none;
+        animation: fadeInUp 0.8s ease;
+      }
+
+      .section.active {
+        display: block;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .hero {
+        text-align: center;
+        padding: 30px 0; /* Reduced from 40px */
+        background: linear-gradient(
+          135deg,
+          var(--primary-light),
+          var(--primary)
+        );
+        color: white;
+        border-radius: var(--radius);
+        margin-bottom: 30px;
+        box-shadow: var(--shadow);
+      }
+
+      .hero h2 {
+        font-size: 2.2rem; /* Reduced from 2.5rem */
+        margin-bottom: 15px;
+      }
+
+      .ai-insight {
+        font-size: 1.1rem; /* Reduced from 1.2rem */
+        max-width: 800px;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 15px;
+        border-radius: var(--radius);
+      }
+
+      .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 40px;
+      }
+
+      .action-card {
+        background: var(--light-card);
+        border-radius: var(--radius);
+        padding: 22px; /* Reduced from 25px */
+        text-align: center;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+        text-decoration: none;
+        color: inherit;
+        border-top: 4px solid var(--primary);
+        animation: fadeInUp 0.6s ease forwards;
+        opacity: 0;
+      }
+
+      .dark-mode .action-card {
+        background: var(--dark-card);
+        box-shadow: var(--shadow-dark);
+      }
+
+      .action-card:nth-child(1) {
+        animation-delay: 0.1s;
+      }
+      .action-card:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .action-card:nth-child(3) {
+        animation-delay: 0.3s;
+      }
+
+      .action-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      .card-icon {
+        font-size: 36px; /* Reduced from 40px */
+        margin-bottom: 12px; /* Reduced from 15px */
+        color: var(--primary);
+      }
+
+      .action-card h3 {
+        margin-bottom: 8px; /* Reduced from 10px */
+        color: var(--primary);
+        font-size: 1.2rem; /* Added for consistency */
+      }
+
+      .location-input-section {
+        background: var(--light-card);
+        border-radius: var(--radius);
+        padding: 22px; /* Reduced from 25px */
+        box-shadow: var(--shadow);
+        margin-bottom: 30px;
+      }
+
+      .dark-mode .location-input-section {
+        background: var(--dark-card);
+        box-shadow: var(--shadow-dark);
+      }
+
+      .location-input-section h3 {
+        margin-bottom: 18px; /* Reduced from 20px */
+        color: var(--primary);
+        font-size: 1.3rem; /* Added for consistency */
+      }
+
+      .input-group {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .input-group input {
+        flex: 1;
+        min-width: 200px;
+        padding: 12px 15px;
+        border: 1px solid var(--light-border);
+        border-radius: 8px;
+        font-size: 16px;
+        background: var(--light-bg);
+        color: var(--light-text);
+        transition: var(--transition);
+      }
+
+      .dark-mode .input-group input {
+        background: var(--dark-bg);
+        color: var(--dark-text);
+        border: 1px solid var(--dark-border);
+      }
+
+      .input-group input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+      }
+
+      .input-group button {
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: var(--transition);
+      }
+
+      .primary-btn {
+        background: var(--primary);
+        color: white;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .primary-btn:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+        transition: 0.5s;
+      }
+
+      .primary-btn:hover:before {
+        left: 100%;
+      }
+
+      .primary-btn:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+      }
+
+      .analysis-results {
+        background: var(--light-card);
+        border-radius: var(--radius);
+        padding: 22px; /* Reduced from 25px */
+        box-shadow: var(--shadow);
+        margin-top: 30px;
+      }
+
+      .dark-mode .analysis-results {
+        background: var(--dark-card);
+        box-shadow: var(--shadow-dark);
+      }
+
+      .user-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .stat-card {
+        background: var(--light-card);
+        border-radius: var(--radius);
+        padding: 18px; /* Reduced from 20px */
+        text-align: center;
+        box-shadow: var(--shadow);
+        border-top: 4px solid var(--primary);
+        transition: var(--transition);
+      }
+
+      .dark-mode .stat-card {
+        background: var(--dark-card);
+        box-shadow: var(--shadow-dark);
+      }
+
+      .stat-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .stat-card h4 {
+        margin-bottom: 12px; /* Reduced from 15px */
+        color: var(--primary);
+        font-size: 1.1rem; /* Added for consistency */
+      }
+
+      .circular-gauge {
+        width: 140px; /* Reduced from 150px */
+        height: 140px; /* Reduced from 150px */
+        margin: 0 auto;
+      }
+
+      .circular-gauge svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      .gauge-bg {
+        fill: none;
+        stroke: #e0e0e0;
+        stroke-width: 10;
+      }
+
+      .gauge-fill {
+        fill: none;
+        stroke: var(--primary);
+        stroke-width: 10;
+        stroke-linecap: round;
+        transform: rotate(-90deg);
+        transform-origin: 50% 50%;
+        stroke-dasharray: 283;
+        stroke-dashoffset: 283;
+        transition: stroke-dashoffset 1s ease;
+      }
+
+      .aqi-gauge {
+        stroke: var(--accent);
+      }
+
+      .noise-gauge {
+        stroke: var(--secondary);
+      }
+
+      .traffic-gauge {
+        stroke: var(--primary-dark);
+      }
+
+      .gauge-text {
+        font-size: 22px; /* Reduced from 24px */
+        font-weight: bold;
+        fill: var(--light-text);
+        text-anchor: middle;
+        dominant-baseline: middle;
+      }
+
+      .dark-mode .gauge-text {
+        fill: var(--dark-text);
+      }
+
+      .interpretation {
+        font-size: 14px;
+        margin-top: 8px; /* Reduced from 10px */
+        color: var(--light-text);
+        font-weight: 500;
+      }
+
+      .dark-mode .interpretation {
+        color: var(--dark-text);
+      }
+
+      .interpretation.good {
+        color: var(--primary);
+      }
+
+      .interpretation.moderate {
+        color: var(--accent);
+      }
+
+      .interpretation.poor {
+        color: #f44336;
+      }
+
+      .impact-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .impact-card {
+        background: var(--light-card);
+        border-radius: var(--radius);
+        padding: 22px; /* Reduced from 25px */
+        text-align: center;
+        box-shadow: var(--shadow);
+        border-left: 4px solid var(--primary);
+        transition: var(--transition);
+      }
+
+      .dark-mode .impact-card {
+        background: var(--dark-card);
+        box-shadow: var(--shadow-dark);
+      }
+
+      .impact-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .impact-card h4 {
+        margin-bottom: 8px; /* Reduced from 10px */
+        color: var(--primary);
+        font-size: 1.1rem; /* Added for consistency */
+      }
+
+      .impact-value {
+        font-size: 1.8rem; /* Reduced from 2rem */
+        font-weight: bold;
+        color: var(--primary);
+      }
+
+      .badges-section {
+        background: var(--light-card);
+        border-radius: var(--radius);
+        padding: 22px; /* Reduced from 25px */
+        box-shadow: var(--shadow);
+      }
+
+      .dark-mode .badges-section {
+        background: var(--dark-card);
+        box-shadow: var(--shadow-dark);
+      }
+
+      .badges-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 15px;
+        margin-top: 15px;
+      }
+
+      .badge-item {
+        text-align: center;
+        padding: 15px 10px;
+        background: var(--light-bg);
+        border-radius: var(--radius);
+        transition: var(--transition);
+      }
+
+      .dark-mode .badge-item {
+        background: var(--dark-bg);
+      }
+
+      .badge-item:hover {
+        transform: scale(1.05);
+      }
+
+      .badge-icon {
+        font-size: 30px;
+        margin-bottom: 8px;
+        color: var(--primary);
+      }
+
+      .map-container {
+        height: 500px;
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        margin-bottom: 20px;
+      }
+
+      .map-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .mode-toggle-small {
+        display: flex;
+        background: var(--light-card);
+        padding: 5px;
+        border-radius: 30px;
+        box-shadow: var(--shadow);
+      }
+
+      .dark-mode .mode-toggle-small {
+        background: var(--dark-card);
+        box-shadow: var(--shadow-dark);
+      }
+
+      .mode-btn {
+        padding: 10px 18px; /* Reduced from 10px 20px */
+        border: none;
+        border-radius: 20px;
+        background: transparent;
+        cursor: pointer;
+        font-weight: 600;
+        transition: var(--transition);
+        font-size: 0.9rem; /* Added for consistency */
+      }
+
+      .mode-btn.active {
+        background: var(--primary);
+        color: white;
+      }
+
+      .map-legend {
+        background: var(--light-card);
+        border-radius: var(--radius);
+        padding: 18px; /* Reduced from 20px */
+        box-shadow: var(--shadow);
+      }
+
+      .dark-mode .map-legend {
+        background: var(--dark-card);
+        box-shadow: var(--shadow-dark);
+      }
+
+      .map-legend h4 {
+        margin-bottom: 12px; /* Reduced from 15px */
+        color: var(--primary);
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px; /* Reduced from 10px */
+      }
+
+      .legend-color {
+        margin-right: 10px;
+        font-size: 20px;
+      }
+
+      .community-header {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 20px;
+      }
+
+      .community-feed {
+        display: grid;
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .post-item {
+        background: var(--light-card);
+        border-radius: var(--radius);
+        padding: 18px; /* Reduced from 20px */
+        box-shadow: var(--shadow);
+        border-left: 4px solid var(--primary);
+        transition: var(--transition);
+      }
+
+      .dark-mode .post-item {
+        background: var(--dark-card);
+        box-shadow: var(--shadow-dark);
+      }
+
+      .post-item:hover {
+        transform: translateY(-5px);
+      }
+
+      .post-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px; /* Reduced from 10px */
+      }
+
+      .post-title {
+        font-weight: bold;
+        color: var(--primary);
+        font-size: 1.1rem; /* Added for consistency */
+      }
+
+      .post-type-badge {
+        background: var(--primary-light);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+      }
+
+      .post-meta {
+        font-size: 14px;
+        color: #666;
+        margin: 8px 0; /* Reduced from 10px */
+      }
+
+      .dark-mode .post-meta {
+        color: #aaa;
+      }
+
+      .upvote-btn {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: var(--transition);
+      }
+
+      .upvote-btn:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+      }
+
+      .leaderboard {
+        background: var(--light-card);
+        border-radius: var(--radius);
+        padding: 22px; /* Reduced from 25px */
+        box-shadow: var(--shadow);
+      }
+
+      .dark-mode .leaderboard {
+        background: var(--dark-card);
+        box-shadow: var(--shadow-dark);
+      }
+
+      .leaderboard-item {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        border-bottom: 1px solid var(--light-border);
+        transition: var(--transition);
+      }
+
+      .dark-mode .leaderboard-item {
+        border-bottom: 1px solid var(--dark-border);
+      }
+
+      .leaderboard-item:hover {
+        background: var(--light-bg);
+      }
+
+      .dark-mode .leaderboard-item:hover {
+        background: var(--dark-bg);
+      }
+
+      .leaderboard-item:last-child {
+        border-bottom: none;
+      }
+
+      .rank {
+        font-size: 20px;
+        margin-right: 15px;
+        width: 30px;
+      }
+
+      .chatbot-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+      }
+
+      .chatbot-toggle {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: var(--primary);
+        color: white;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+      }
+
+      .chatbot-toggle:hover {
+        background: var(--primary-dark);
+        transform: scale(1.1);
+      }
+
+      .chatbot-window {
+        position: absolute;
+        bottom: 70px;
+        right: 0;
+        width: 350px;
+        height: 500px;
+        background: var(--light-card);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .dark-mode .chatbot-window {
+        background: var(--dark-card);
+        box-shadow: var(--shadow-dark);
+      }
+
+      .chatbot-header {
+        background: var(--primary);
+        color: white;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .chatbot-header button {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+      }
+
+      .chatbot-messages {
+        flex: 1;
+        padding: 15px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .bot-message,
+      .user-message {
+        padding: 10px 15px;
+        border-radius: 18px;
+        max-width: 80%;
+      }
+
+      .bot-message {
+        background: var(--light-bg);
+        align-self: flex-start;
+      }
+
+      .dark-mode .bot-message {
+        background: var(--dark-bg);
+      }
+
+      .user-message {
+        background: var(--primary);
+        color: white;
+        align-self: flex-end;
+      }
+
+      .chatbot-input {
+        display: flex;
+        padding: 15px;
+        border-top: 1px solid var(--light-border);
+      }
+
+      .dark-mode .chatbot-input {
+        border-top: 1px solid var(--dark-border);
+      }
+
+      .chatbot-input input {
+        flex: 1;
+        padding: 10px 15px;
+        border: 1px solid var(--light-border);
+        border-radius: 20px;
+        margin-right: 10px;
+        background: var(--light-bg);
+        color: var(--light-text);
+      }
+
+      .dark-mode .chatbot-input input {
+        background: var(--dark-bg);
+        color: var(--dark-text);
+        border: 1px solid var(--dark-border);
+      }
+
+      .chatbot-input button {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 20px;
+        cursor: pointer;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1001;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal-content {
+        background: var(--light-card);
+        border-radius: var(--radius);
+        padding: 25px; /* Reduced from 30px */
+        width: 90%;
+        max-width: 500px;
+        box-shadow: var(--shadow);
+        position: relative;
+      }
+
+      .dark-mode .modal-content {
+        background: var(--dark-card);
+        box-shadow: var(--shadow-dark);
+      }
+
+      .close {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        font-size: 24px;
+        cursor: pointer;
+        color: #666;
+      }
+
+      .dark-mode .close {
+        color: #aaa;
+      }
+
+      .route-form,
+      .post-form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      .route-form input,
+      .post-form input,
+      .post-form textarea,
+      .post-form select {
+        padding: 12px 15px;
+        border: 1px solid var(--light-border);
+        border-radius: 8px;
+        font-size: 16px;
+        background: var(--light-bg);
+        color: var(--light-text);
+      }
+
+      .dark-mode .route-form input,
+      .dark-mode .post-form input,
+      .dark-mode .post-form textarea,
+      .dark-mode .post-form select {
+        background: var(--dark-bg);
+        color: var(--dark-text);
+        border: 1px solid var(--dark-border);
+      }
+
+      .post-form textarea {
+        min-height: 100px;
+        resize: vertical;
+      }
+
+      .route-options {
+        display: flex;
+        gap: 15px;
+      }
+
+      .route-options label {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      /* Footer */
+      footer {
+        background: var(--light-card);
+        padding: 50px 0 30px; /* Reduced from 60px */
+        margin-top: 40px;
+        border-top: 1px solid var(--light-border);
+      }
+
+      .dark-mode footer {
+        background: var(--dark-card);
+        border-top: 1px solid var(--dark-border);
+      }
+
+      .footer-content {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 40px;
+        margin-bottom: 40px;
+      }
+
+      .footer-column h3 {
+        font-size: 1.3rem; /* Reduced from 1.4rem */
+        margin-bottom: 20px; /* Reduced from 25px */
+        color: var(--primary);
+      }
+
+      .dark-mode .footer-column h3 {
+        color: var(--primary-light);
+      }
+
+      .footer-links {
+        display: flex;
+        flex-direction: column;
+        gap: 12px; /* Reduced from 15px */
+      }
+
+      .footer-links a {
+        color: var(--light-text);
+        text-decoration: none;
+        transition: var(--transition);
+        position: relative;
+        padding-left: 0;
+      }
+
+      .dark-mode .footer-links a {
+        color: var(--dark-text);
+      }
+
+      .footer-links a:before {
+        content: "›";
+        position: absolute;
+        left: 0;
+        opacity: 0;
+        transition: var(--transition);
+      }
+
+      .footer-links a:hover {
+        color: var(--primary);
+        padding-left: 15px;
+      }
+
+      .footer-links a:hover:before {
+        opacity: 1;
+      }
+
+      .social-links {
+        display: flex;
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      .social-link {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--primary);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: var(--transition);
+      }
+
+      .social-link:hover {
+        transform: translateY(-5px);
+        background: var(--primary-dark);
+      }
+
+      .copyright {
+        text-align: center;
+        padding-top: 25px; /* Reduced from 30px */
+        border-top: 1px solid var(--light-border);
+        color: var(--light-text);
+      }
+
+      .dark-mode .copyright {
+        border-top: 1px solid var(--dark-border);
+        color: var(--dark-text);
+      }
+
+      /* Zone indicators for POIs */
+      .zone-indicator {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        margin-left: 8px;
+      }
+
+      .zone-calm {
+        background-color: #4caf50;
+        color: white;
+      }
+
+      .zone-busy {
+        background-color: #ff9800;
+        color: white;
+      }
+
+      .zone-pollution {
+        background-color: #f44336;
+        color: white;
+      }
+
+      /* Mobile Responsiveness */
+      @media (max-width: 768px) {
+        header {
+          padding: 12px 0; /* Further reduced for mobile */
+        }
+
+        .header-content {
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .nav-links {
+          width: 100%;
+          justify-content: center;
+          flex-wrap: wrap;
+          gap: 15px;
+        }
+
+        .nav-link {
+          font-size: 0.9rem;
+          padding: 6px 0;
+        }
+
+        .mode-toggle {
+          padding: 8px 15px;
+        }
+
+        .logo-text {
+          font-size: 1.4rem;
+        }
+
+        .logo-icon {
+          width: 40px;
+          height: 40px;
+          font-size: 1.2rem;
+        }
+
+        main {
+          padding: 120px 0 40px; /* Adjusted for mobile header height */
+        }
+
+        .hero h2 {
+          font-size: 1.8rem;
+        }
+
+        .ai-insight {
+          font-size: 1rem;
+        }
+
+        .input-group {
+          flex-direction: column;
+        }
+
+        .input-group input,
+        .input-group button {
+          width: 100%;
+        }
+
+        .chatbot-window {
+          width: calc(100vw - 40px);
+          right: 20px;
+        }
+
+        .footer-content {
+          grid-template-columns: 1fr;
+          text-align: center;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .quick-actions {
+          grid-template-columns: 1fr;
+        }
+
+        .user-stats {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .impact-stats {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .map-controls {
+          flex-direction: column;
+          gap: 15px;
+          align-items: flex-start;
+        }
+
+        .mode-toggle-small {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+    </style>
+  </head>
+  <body class="light-mode">
+    <!-- Animated Background -->
+    <div class="animated-bg">
+      <div class="bg-circle"></div>
+      <div class="bg-circle"></div>
+      <div class="bg-circle"></div>
+      <div class="bg-circle"></div>
+    </div>
+
+    <header id="header">
+      <div class="container">
+        <div class="header-content">
+          <div class="logo">
+            <div class="logo-icon">G</div>
+            <div class="logo-text">GYATAH</div>
+          </div>
+
+          <div class="nav-links">
+            <a class="nav-link active" data-section="home">Home</a>
+            <a class="nav-link" data-section="dashboard">Dashboard</a>
+            <a class="nav-link" data-section="map">Live Map</a>
+            <a class="nav-link" data-section="community">Community</a>
+          </div>
+
+          <div class="mode-toggle" id="modeToggle">
+            <span class="toggle-label">Light</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="modeToggleCheckbox" />
+              <span class="slider"></span>
+            </label>
+            <span class="toggle-label">Dark</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <section id="home-section" class="section active">
+        <div class="hero">
+          <h2>Discover Smarter, Greener Cities</h2>
+          <p class="ai-insight" id="main-insight">Loading AI insights...</p>
+        </div>
+
+        <div class="quick-actions">
+          <a class="action-card" data-section="dashboard">
+            <div class="card-icon"><i class="fas fa-wind"></i></div>
+            <h3>Check Air Quality</h3>
+            <p>Real-time AQI, noise & traffic</p>
+          </a>
+          <div class="action-card" onclick="showRouteModal()">
+            <div class="card-icon"><i class="fas fa-route"></i></div>
+            <h3>Find Low-Traffic Routes</h3>
+            <p>AI-powered eco-friendly paths</p>
+          </div>
+          <a class="action-card" data-section="dashboard">
+            <div class="card-icon"><i class="fas fa-medal"></i></div>
+            <h3>Carbon Credit Score</h3>
+            <p>Track your green impact</p>
+          </a>
+        </div>
+
+        <div class="location-input-section">
+          <h3><i class="fas fa-map-marker-alt"></i> Analyze Your Location</h3>
+          <div class="input-group">
+            <input
+              type="text"
+              id="location-input"
+              placeholder="Enter location or use GPS"
+            />
+            <button onclick="getCurrentLocation()">
+              <i class="fas fa-location-crosshairs"></i> Use GPS
+            </button>
+            <button onclick="analyzeLocation()" class="primary-btn">
+              <i class="fas fa-chart-bar"></i> Analyze
+            </button>
+          </div>
+        </div>
+
+        <div
+          id="analysis-results"
+          class="analysis-results"
+          style="display: none"
+        >
+          <h3><i class="fas fa-chart-pie"></i> Location Analysis Results</h3>
+          <div id="analysis-content"></div>
+        </div>
+      </section>
+
+      <section id="dashboard-section" class="section">
+        <h2><i class="fas fa-leaf"></i> Your Eco-Dashboard</h2>
+
+        <div class="user-stats">
+          <div class="stat-card">
+            <h4>Green Score</h4>
+            <div class="circular-gauge">
+              <svg viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" class="gauge-bg"></circle>
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="45"
+                  class="gauge-fill"
+                  id="green-score-gauge"
+                ></circle>
+                <text x="50" y="55" class="gauge-text" id="green-score-text">
+                  0
+                </text>
+              </svg>
+            </div>
+            <div class="interpretation" id="green-score-interpretation">
+              Calculating...
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <h4>Air Quality Index</h4>
+            <div class="circular-gauge">
+              <svg viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" class="gauge-bg"></circle>
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="45"
+                  class="gauge-fill aqi-gauge"
+                  id="aqi-gauge"
+                ></circle>
+                <text x="50" y="55" class="gauge-text" id="aqi-text">0</text>
+              </svg>
+            </div>
+            <div class="interpretation" id="aqi-interpretation">
+              Calculating...
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <h4>Noise Level</h4>
+            <div class="circular-gauge">
+              <svg viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" class="gauge-bg"></circle>
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="45"
+                  class="gauge-fill noise-gauge"
+                  id="noise-gauge"
+                ></circle>
+                <text x="50" y="55" class="gauge-text" id="noise-text">0</text>
+              </svg>
+            </div>
+            <div class="interpretation" id="noise-interpretation">
+              Calculating...
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <h4>Traffic Level</h4>
+            <div class="circular-gauge">
+              <svg viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" class="gauge-bg"></circle>
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="45"
+                  class="gauge-fill traffic-gauge"
+                  id="traffic-gauge"
+                ></circle>
+                <text x="50" y="55" class="gauge-text" id="traffic-text">
+                  0
+                </text>
+              </svg>
+            </div>
+            <div class="interpretation" id="traffic-interpretation">
+              Calculating...
+            </div>
+          </div>
+        </div>
+
+        <div class="impact-stats">
+          <div class="impact-card">
+            <h4><i class="fas fa-cloud"></i> CO₂ Saved</h4>
+            <p class="impact-value" id="co2-saved">0 kg</p>
+            <p>Equivalent to planting 0 trees</p>
+          </div>
+          <div class="impact-card">
+            <h4><i class="fas fa-walking"></i> Clean Trips</h4>
+            <p class="impact-value" id="clean-trips">0</p>
+            <p>Eco-friendly journeys this month</p>
+          </div>
+          <div class="impact-card">
+            <h4><i class="fas fa-fire"></i> Eco Streak</h4>
+            <p class="impact-value" id="eco-streak">0 days</p>
+            <p>Keep going for more rewards!</p>
+          </div>
+          <div class="impact-card">
+            <h4><i class="fas fa-star"></i> Eco Points</h4>
+            <p class="impact-value" id="eco-points">0</p>
+            <p>Redeem for exclusive rewards</p>
+          </div>
+        </div>
+
+        <div class="badges-section">
+          <h3><i class="fas fa-trophy"></i> Your Badges</h3>
+          <div id="badges-container" class="badges-grid"></div>
+        </div>
+      </section>
+
+      <section id="map-section" class="section">
+        <div class="map-controls">
+          <h2><i class="fas fa-map-marked-alt"></i> Live Urban Map</h2>
+          <div class="mode-toggle-small">
+            <button class="mode-btn active" data-mode="citizen">
+              <i class="fas fa-users"></i> Citizen Mode
+            </button>
+            <button class="mode-btn" data-mode="expert">
+              <i class="fas fa-microscope"></i> Expert Mode
+            </button>
+          </div>
+        </div>
+
+        <div id="map" class="map-container"></div>
+
+        <div class="map-legend" id="citizen-legend">
+          <h4>Map Legend</h4>
+          <div class="legend-item">
+            <span class="legend-color"
+              ><i class="fas fa-car" style="color: #ef4444"></i
+            ></span>
+            Busy Areas - Heavy traffic and congestion
+          </div>
+          <div class="legend-item">
+            <span class="legend-color"
+              ><i class="fas fa-leaf" style="color: #10b981"></i
+            ></span>
+            Calm Zones - Peaceful and quiet areas
+          </div>
+          <div class="legend-item">
+            <span class="legend-color"
+              ><i class="fas fa-lungs" style="color: #f59e0b"></i
+            ></span>
+            High Pollution - Poor air quality zones
+          </div>
+        </div>
+
+        <div
+          class="map-legend expert-legend"
+          id="expert-legend"
+          style="display: none"
+        >
+          <h4>Expert Controls</h4>
+          <label
+            ><input type="checkbox" checked data-layer="traffic-flow" /> Traffic
+            Flow</label
+          >
+          <label
+            ><input type="checkbox" checked data-layer="traffic-incidents" />
+            Traffic Incidents</label
+          >
+          <label
+            ><input type="checkbox" data-layer="poi-clusters" /> POI
+            Clusters</label
+          >
+        </div>
+      </section>
+
+      <section id="community-section" class="section">
+        <h2><i class="fas fa-comments"></i> Community Space</h2>
+
+        <div class="community-header">
+          <button onclick="showPostModal()" class="primary-btn">
+            <i class="fas fa-plus"></i> Share Your Insight
+          </button>
+        </div>
+
+        <div class="community-feed" id="community-feed">
+          <p>Loading community posts...</p>
+        </div>
+
+        <div class="leaderboard">
+          <h3><i class="fas fa-trophy"></i> Top Eco-Commuters</h3>
+          <div id="leaderboard-list"></div>
+        </div>
+      </section>
+    </main>
+
+    <div class="chatbot-container">
+      <button class="chatbot-toggle" onclick="toggleChatbot()">
+        <i class="fas fa-robot"></i>
+      </button>
+      <div class="chatbot-window" id="chatbot-window" style="display: none">
+        <div class="chatbot-header">
+          <h3><i class="fas fa-robot"></i> GeoSense+ Assistant</h3>
+          <button onclick="toggleChatbot()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="chatbot-messages" id="chatbot-messages">
+          <div class="bot-message">
+            Hi! I'm your eco-assistant. Ask me about clean routes, air quality,
+            or eco-points! 🌿
+          </div>
+        </div>
+        <div class="chatbot-input">
+          <input
+            type="text"
+            id="chatbot-input"
+            placeholder="Ask me anything..."
+            onkeypress="if(event.key==='Enter') sendChatMessage()"
+          />
+          <button onclick="sendChatMessage()">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="route-modal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeRouteModal()">&times;</span>
+        <h2><i class="fas fa-route"></i> Plan Eco-Friendly Route</h2>
+        <div class="route-form">
+          <input
+            type="text"
+            id="start-location"
+            placeholder="Start location (or use GPS)"
+          />
+          <input type="text" id="end-location" placeholder="Destination" />
+          <div class="route-options">
+            <label
+              ><input type="radio" name="route-type" value="eco" checked />
+              Eco-Friendly</label
+            >
+            <label
+              ><input type="radio" name="route-type" value="fastest" />
+              Fastest</label
+            >
+          </div>
+          <button onclick="planRoute()" class="primary-btn">Find Route</button>
+        </div>
+        <div id="route-results"></div>
+      </div>
+    </div>
+
+    <div id="post-modal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closePostModal()">&times;</span>
+        <h2>Share Your Insight</h2>
+        <div class="post-form">
+          <input type="text" id="post-title" placeholder="Title" />
+          <textarea
+            id="post-content"
+            placeholder="Share your eco-discovery..."
+          ></textarea>
+          <input type="text" id="post-location" placeholder="Location" />
+          <select id="post-type">
+            <option value="eco_route">Eco Route</option>
+            <option value="eco_zone">Eco Zone</option>
+            <option value="alert">Traffic Alert</option>
+            <option value="general">General</option>
+          </select>
+          <button onclick="submitPost()" class="primary-btn">Post</button>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-column">
+            <h3>About Gyatah</h3>
+            <p>
+              Gyatah is an innovative platform that combines sustainability with
+              technology to help users make eco-friendly travel decisions.
+            </p>
+            <div class="social-links">
+              <a href="#" class="social-link"
+                ><i class="fab fa-facebook-f"></i
+              ></a>
+              <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+              <a href="#" class="social-link"
+                ><i class="fab fa-instagram"></i
+              ></a>
+              <a href="#" class="social-link"
+                ><i class="fab fa-linkedin-in"></i
+              ></a>
+            </div>
+          </div>
+          <div class="footer-column">
+            <h3>Quick Links</h3>
+            <div class="footer-links">
+              <a class="nav-link" data-section="home">Home</a>
+              <a class="nav-link" data-section="dashboard">Dashboard</a>
+              <a class="nav-link" data-section="map">Live Map</a>
+              <a class="nav-link" data-section="community">Community</a>
+            </div>
+          </div>
+          <div class="footer-column">
+            <h3>Features</h3>
+            <div class="footer-links">
+              <a class="nav-link" data-section="map">Eco-Route Finder</a>
+              <a class="nav-link" data-section="dashboard">Live Dashboard</a>
+              <a class="nav-link" data-section="dashboard"
+                >Personal Dashboard</a
+              >
+              <a class="nav-link" data-section="community">Community Hub</a>
+            </div>
+          </div>
+          <div class="footer-column">
+            <h3>Contact Us</h3>
+            <div class="footer-links">
+              <a href="mailto:info@gyatah.com">info@gyatah.com</a>
+              <a href="tel:+1234567890">+1 (234) 567-890</a>
+              <a href="#">123 Green Street, Eco City</a>
+            </div>
+          </div>
+        </div>
+        <div class="copyright">
+          &copy; 2023 Gyatah. All rights reserved. Making the world greener, one
+          route at a time.
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.25.0/maps/maps-web.min.js"></script>
+    <script src="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.25.0/services/services-web.min.js"></script>
+    <script>
+      // Mode Toggle Functionality
+      const modeToggle = document.getElementById("modeToggle");
+      const modeToggleCheckbox = document.getElementById("modeToggleCheckbox");
+      const body = document.body;
+      const toggleLabels = document.querySelectorAll(".toggle-label");
+
+      modeToggle.addEventListener("click", function () {
+        modeToggleCheckbox.checked = !modeToggleCheckbox.checked;
+        toggleMode();
+      });
+
+      modeToggleCheckbox.addEventListener("change", toggleMode);
+
+      function toggleMode() {
+        if (modeToggleCheckbox.checked) {
+          body.classList.remove("light-mode");
+          body.classList.add("dark-mode");
+          toggleLabels[0].textContent = "Dark";
+          toggleLabels[1].textContent = "Light";
+        } else {
+          body.classList.remove("dark-mode");
+          body.classList.add("light-mode");
+          toggleLabels[0].textContent = "Light";
+          toggleLabels[1].textContent = "Dark";
+        }
+      }
+
+      // Map and navigation functionality
+      const TOMTOM_API_KEY = "{{ tomtom_key }}";
+
+      let map;
+      let currentLat = 18.5204;
+      let currentLon = 73.8567;
+      let currentMode = "citizen";
+      let markers = [];
+      let trafficLayer;
+      let trafficIncidentsLayer;
+
+      function showSection(sectionName) {
+        document
+          .querySelectorAll(".section")
+          .forEach((s) => s.classList.remove("active"));
+        document
+          .querySelectorAll(".nav-link")
+          .forEach((b) => b.classList.remove("active"));
+
+        document
+          .getElementById(`${sectionName}-section`)
+          .classList.add("active");
+        document
+          .querySelector(`[data-section="${sectionName}"]`)
+          .classList.add("active");
+
+        if (sectionName === "map") {
+          setTimeout(() => {
+            if (!map) {
+              initMap();
+            } else {
+              map.resize();
+            }
+          }, 200);
+        } else if (sectionName === "dashboard") {
+          loadDashboard();
+        } else if (sectionName === "community") {
+          loadCommunityPosts();
+          loadLeaderboard();
+        }
+      }
+
+      function initMap() {
+        if (!map && typeof tt !== "undefined") {
+          const mapContainer = document.getElementById("map");
+          if (!mapContainer) {
+            console.error("Map container not found");
+            return;
+          }
+
+          try {
+            map = tt.map({
+              key: TOMTOM_API_KEY || "demo",
+              container: "map",
+              center: [currentLon, currentLat],
+              zoom: 13,
+              style:
+                "https://api.tomtom.com/style/2/custom/style/dG9tdG9tQEBAbmlnaHQtc3R5bGU7MDs0YzFhYTdiYS1mYzc3LTRiNjUtYjRmNy1lNDkzZGRkMTlmMWE.json?key=" +
+                (TOMTOM_API_KEY || "demo"),
+            });
+
+            trafficLayer = tt.trafficLayer({
+              key: TOMTOM_API_KEY || "demo",
+              trafficFlow: true,
+              trafficIncidents: false,
+            });
+
+            trafficIncidentsLayer = tt.trafficLayer({
+              key: TOMTOM_API_KEY || "demo",
+              trafficFlow: false,
+              trafficIncidents: true,
+            });
+
+            map.on("load", function () {
+              map.resize();
+              addMapMarkers();
+              updateMapMode();
+            });
+
+            setTimeout(() => {
+              if (map) {
+                map.resize();
+              }
+            }, 500);
+          } catch (e) {
+            console.error("Error initializing map:", e);
+          }
+        } else if (typeof tt === "undefined") {
+          console.error("TomTom SDK not loaded.");
+          const mapContainer = document.getElementById("map");
+          if (mapContainer) {
+            mapContainer.innerHTML =
+              '<div style="padding: 2rem; text-align: center; color: #666;"><p>⚠️ TomTom SDK not loaded. Please refresh the page.</p></div>';
+          }
+        } else if (map) {
+          map.resize();
+        }
+      }
+
+      function addMapMarkers() {
+        if (!map) return;
+
+        markers.forEach((m) => m.remove());
+        markers = [];
+
+        const zones = [
+          {
+            lat: 18.5204,
+            lon: 73.8567,
+            type: "busy",
+            name: "FC Road - High Traffic",
+            aqi: 120,
+            noise: 75,
+          },
+          {
+            lat: 18.5314,
+            lon: 73.8446,
+            type: "calm",
+            name: "Koregaon Park - Calm Zone",
+            aqi: 65,
+            noise: 45,
+          },
+          {
+            lat: 18.5074,
+            lon: 73.8077,
+            type: "pollution",
+            name: "Industrial Area - High Pollution",
+            aqi: 150,
+            noise: 80,
+          },
+          {
+            lat: 18.5362,
+            lon: 73.897,
+            type: "calm",
+            name: "Viman Nagar - Low Traffic",
+            aqi: 70,
+            noise: 50,
+          },
+        ];
+
+        zones.forEach((zone) => {
+          const icon =
+            currentMode === "citizen"
+              ? zone.type === "busy"
+                ? "🚗"
+                : zone.type === "calm"
+                ? "🌿"
+                : "😷"
+              : "📍";
+
+          const el = document.createElement("div");
+          el.className = "custom-marker";
+          el.innerHTML = `<div style="font-size: 24px; cursor: pointer;">${icon}</div>`;
+
+          const popup = new tt.Popup({ offset: 35 }).setHTML(
+            `<div style="padding: 10px;">
+                      <strong>${zone.name}</strong>
+                      <span class="zone-indicator ${
+                        zone.type === "calm"
+                          ? "zone-calm"
+                          : zone.type === "busy"
+                          ? "zone-busy"
+                          : "zone-pollution"
+                      }">${
+              zone.type === "calm"
+                ? "Calm Zone"
+                : zone.type === "busy"
+                ? "Busy Zone"
+                : "Polluted Zone"
+            }</span><br>
+                      <small>Type: ${zone.type}</small><br>
+                      ${
+                        currentMode === "expert"
+                          ? `
+                          <small>AQI: ${zone.aqi}</small><br>
+                          <small>Noise: ${zone.noise} dB</small>
+                      `
+                          : ""
+                      }
+                  </div>`
+          );
+
+          const marker = new tt.Marker({ element: el })
+            .setLngLat([zone.lon, zone.lat])
+            .setPopup(popup)
+            .addTo(map);
+
+          markers.push(marker);
+        });
+      }
+
+      function updateMapMode() {
+        if (!map) return;
+
+        if (currentMode === "citizen") {
+          if (trafficLayer.isOnTheMap()) {
+            map.removeLayer(trafficLayer);
+          }
+          if (trafficIncidentsLayer.isOnTheMap()) {
+            map.removeLayer(trafficIncidentsLayer);
+          }
+          addMapMarkers();
+        } else {
+          const trafficFlowCheckbox = document.querySelector(
+            '#expert-legend input[data-layer="traffic-flow"]'
+          );
+          const trafficIncidentsCheckbox = document.querySelector(
+            '#expert-legend input[data-layer="traffic-incidents"]'
+          );
+          const poiClustersCheckbox = document.querySelector(
+            '#expert-legend input[data-layer="poi-clusters"]'
+          );
+
+          if (
+            trafficFlowCheckbox &&
+            trafficFlowCheckbox.checked &&
+            !trafficLayer.isOnTheMap()
+          ) {
+            map.addLayer(trafficLayer);
+          } else if (
+            trafficFlowCheckbox &&
+            !trafficFlowCheckbox.checked &&
+            trafficLayer.isOnTheMap()
+          ) {
+            map.removeLayer(trafficLayer);
+          }
+
+          if (
+            trafficIncidentsCheckbox &&
+            trafficIncidentsCheckbox.checked &&
+            !trafficIncidentsLayer.isOnTheMap()
+          ) {
+            map.addLayer(trafficIncidentsLayer);
+          } else if (
+            trafficIncidentsCheckbox &&
+            !trafficIncidentsCheckbox.checked &&
+            trafficIncidentsLayer.isOnTheMap()
+          ) {
+            map.removeLayer(trafficIncidentsLayer);
+          }
+
+          if (poiClustersCheckbox && poiClustersCheckbox.checked) {
+            addMapMarkers();
+          } else if (poiClustersCheckbox && !poiClustersCheckbox.checked) {
+            markers.forEach((m) => m.remove());
+            markers = [];
+          }
+        }
+      }
+
+      document.querySelectorAll(".mode-btn").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          document
+            .querySelectorAll(".mode-btn")
+            .forEach((b) => b.classList.remove("active"));
+          this.classList.add("active");
+
+          currentMode = this.dataset.mode;
+
+          if (currentMode === "citizen") {
+            document.getElementById("citizen-legend").style.display = "block";
+            document.getElementById("expert-legend").style.display = "none";
+          } else {
+            document.getElementById("citizen-legend").style.display = "none";
+            document.getElementById("expert-legend").style.display = "block";
+          }
+
+          updateMapMode();
+        });
+      });
+
+      document
+        .querySelectorAll('#expert-legend input[type="checkbox"]')
+        .forEach((checkbox) => {
+          checkbox.addEventListener("change", function () {
+            if (!map) return;
+
+            const layerType = this.dataset.layer;
+
+            if (layerType === "traffic-flow") {
+              if (this.checked && !trafficLayer.isOnTheMap()) {
+                map.addLayer(trafficLayer);
+              } else if (!this.checked && trafficLayer.isOnTheMap()) {
+                map.removeLayer(trafficLayer);
+              }
+            } else if (layerType === "traffic-incidents") {
+              if (this.checked && !trafficIncidentsLayer.isOnTheMap()) {
+                map.addLayer(trafficIncidentsLayer);
+              } else if (!this.checked && trafficIncidentsLayer.isOnTheMap()) {
+                map.removeLayer(trafficIncidentsLayer);
+              }
+            } else if (layerType === "poi-clusters") {
+              if (this.checked) {
+                addMapMarkers();
+              } else {
+                markers.forEach((m) => m.remove());
+                markers = [];
+              }
+            }
+          });
+        });
+
+      function getCurrentLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              currentLat = position.coords.latitude;
+              currentLon = position.coords.longitude;
+              document.getElementById(
+                "location-input"
+              ).value = `${currentLat.toFixed(4)}, ${currentLon.toFixed(4)}`;
+
+              if (map) {
+                map.setCenter([currentLon, currentLat]);
+              }
+            },
+            (error) => {
+              alert(
+                "Unable to get your location. Using default location (Pune)."
+              );
+            }
+          );
+        } else {
+          alert("Geolocation is not supported by your browser.");
+        }
+      }
+
+      async function analyzeLocation() {
+        const input = document.getElementById("location-input").value;
+
+        let lat = currentLat;
+        let lon = currentLon;
+
+        if (input.includes(",")) {
+          const coords = input.split(",");
+          lat = parseFloat(coords[0]);
+          lon = parseFloat(coords[1]);
+        }
+
+        try {
+          // Simulated API call - replace with actual endpoint
+          const response = await fetch("/api/location/analyze", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              lat,
+              lon,
+              query: input || "points of interest",
+            }),
+          });
+
+          const data = await response.json();
+          displayAnalysisResults(data);
+        } catch (error) {
+          console.error("Analysis error:", error);
+          // Fallback to demo data
+          const demoData = {
+            insight:
+              "This area has moderate air quality with some traffic congestion. Consider walking or cycling for short distances to reduce your carbon footprint.",
+            metrics: {
+              aqi: 69,
+              noise_level: 65,
+              traffic_level: 92,
+            },
+            traffic_pattern: {
+              pattern:
+                "Peak traffic hours are 8-10 AM and 5-7 PM. Weekends are generally calmer.",
+            },
+            locations: [
+              {
+                name: "Central Park",
+                category: "Park",
+                zone_type: "calm",
+                lat: 18.5204,
+                lon: 73.8567,
+              },
+              {
+                name: "Main Street",
+                category: "Shopping",
+                zone_type: "busy",
+                lat: 18.5314,
+                lon: 73.8446,
+              },
+              {
+                name: "Industrial Area",
+                category: "Industrial",
+                zone_type: "pollution",
+                lat: 18.5074,
+                lon: 73.8077,
+              },
+            ],
+          };
+          displayAnalysisResults(demoData);
+        }
+      }
+
+      function displayAnalysisResults(data) {
+        const resultsDiv = document.getElementById("analysis-results");
+        const contentDiv = document.getElementById("analysis-content");
+
+        // Helper function to get interpretation
+        function getAQIInterpretation(aqi) {
+          if (aqi <= 50) return { text: "Good", class: "good" };
+          if (aqi <= 100) return { text: "Moderate", class: "moderate" };
+          if (aqi <= 150)
+            return { text: "Unhealthy for Sensitive Groups", class: "poor" };
+          if (aqi <= 200) return { text: "Unhealthy", class: "poor" };
+          return { text: "Very Unhealthy", class: "poor" };
+        }
+
+        function getNoiseInterpretation(noise) {
+          if (noise <= 50) return { text: "Quiet", class: "good" };
+          if (noise <= 70) return { text: "Moderate", class: "moderate" };
+          return { text: "Noisy", class: "poor" };
+        }
+
+        function getTrafficInterpretation(traffic) {
+          if (traffic <= 30) return { text: "Light", class: "good" };
+          if (traffic <= 70) return { text: "Moderate", class: "moderate" };
+          return { text: "Heavy", class: "poor" };
+        }
+
+        const aqiInterpretation = getAQIInterpretation(data.metrics.aqi);
+        const noiseInterpretation = getNoiseInterpretation(
+          data.metrics.noise_level
+        );
+        const trafficInterpretation = getTrafficInterpretation(
+          data.metrics.traffic_level
+        );
+
+        let html = `
+              <div class="ai-insight">${data.insight}</div>
+              
+              <div class="metrics-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 2rem 0;">
+                  <div class="metric-card" style="background: var(--light-bg); padding: 1rem; border-radius: 10px; text-align: center;">
+                      <h4>Air Quality Index</h4>
+                      <p style="font-size: 2rem; font-weight: bold; color: ${
+                        aqiInterpretation.class === "good"
+                          ? "var(--primary)"
+                          : aqiInterpretation.class === "moderate"
+                          ? "var(--accent)"
+                          : "#f44336"
+                      };">${data.metrics.aqi}</p>
+                      <p class="interpretation ${aqiInterpretation.class}">${
+          aqiInterpretation.text
+        }</p>
+                  </div>
+                  <div class="metric-card" style="background: var(--light-bg); padding: 1rem; border-radius: 10px; text-align: center;">
+                      <h4>Noise Level</h4>
+                      <p style="font-size: 2rem; font-weight: bold; color: ${
+                        noiseInterpretation.class === "good"
+                          ? "var(--primary)"
+                          : noiseInterpretation.class === "moderate"
+                          ? "var(--accent)"
+                          : "#f44336"
+                      };">${data.metrics.noise_level} dB</p>
+                      <p class="interpretation ${noiseInterpretation.class}">${
+          noiseInterpretation.text
+        }</p>
+                  </div>
+                  <div class="metric-card" style="background: var(--light-bg); padding: 1rem; border-radius: 10px; text-align: center;">
+                      <h4>Traffic Level</h4>
+                      <p style="font-size: 2rem; font-weight: bold; color: ${
+                        trafficInterpretation.class === "good"
+                          ? "var(--primary)"
+                          : trafficInterpretation.class === "moderate"
+                          ? "var(--accent)"
+                          : "#f44336"
+                      };">${data.metrics.traffic_level}%</p>
+                      <p class="interpretation ${
+                        trafficInterpretation.class
+                      }">${trafficInterpretation.text}</p>
+                  </div>
+              </div>
+              
+              <h4>Traffic Pattern Analysis (ML-Powered)</h4>
+              <p style="margin: 1rem 0;">${data.traffic_pattern.pattern}</p>
+              
+              <h4 style="margin-top: 2rem;">Points of Interest (TomTom API)</h4>
+              <div style="display: grid; gap: 1rem; margin-top: 1rem;">
+          `;
+
+        data.locations.forEach((loc) => {
+          const zoneClass =
+            loc.zone_type === "calm"
+              ? "zone-calm"
+              : loc.zone_type === "busy"
+              ? "zone-busy"
+              : "zone-pollution";
+          const zoneText =
+            loc.zone_type === "calm"
+              ? "Calm Zone"
+              : loc.zone_type === "busy"
+              ? "Busy Zone"
+              : "Polluted Zone";
+
+          html += `
+                  <div style="background: var(--light-bg); padding: 1rem; border-radius: 8px;">
+                      <strong>${loc.name}</strong>
+                      <span class="zone-indicator ${zoneClass}">${zoneText}</span><br>
+                      <small style="color: #666;">
+                          ${loc.category} | 
+                          Coordinates: ${loc.lat.toFixed(4)}, ${loc.lon.toFixed(
+            4
+          )}
+                      </small>
+                  </div>
+              `;
+        });
+
+        html += "</div>";
+
+        contentDiv.innerHTML = html;
+        resultsDiv.style.display = "block";
+      }
+
+      async function loadDashboard() {
+        try {
+          // Simulated API call - replace with actual endpoint
+          const response = await fetch("/api/dashboard");
+          const data = await response.json();
+
+          // Fallback to demo data
+          const demoData = {
+            user: {
+              green_score: 75,
+              co2_saved: 12.5,
+              clean_trips: 24,
+              eco_points: 350,
+            },
+            metrics: {
+              aqi: 69,
+              noise: 65,
+              traffic: 92,
+            },
+            streak: 7,
+            insight:
+              "You're doing great! Your eco-friendly choices have saved 12.5kg of CO₂ this month.",
+            badges: [
+              { badge_icon: "🌿", badge_name: "Eco Warrior" },
+              { badge_icon: "🚶", badge_name: "Daily Walker" },
+              { badge_icon: "🌍", badge_name: "Climate Hero" },
+              { badge_icon: "🏆", badge_name: "Weekly Champion" },
+            ],
+          };
+
+          updateDashboard(demoData);
+        } catch (error) {
+          console.error("Dashboard error:", error);
+          // Use demo data on error
+          const demoData = {
+            user: {
+              green_score: 75,
+              co2_saved: 12.5,
+              clean_trips: 24,
+              eco_points: 350,
+            },
+            metrics: {
+              aqi: 69,
+              noise: 65,
+              traffic: 92,
+            },
+            streak: 7,
+            insight:
+              "You're doing great! Your eco-friendly choices have saved 12.5kg of CO₂ this month.",
+            badges: [
+              { badge_icon: "🌿", badge_name: "Eco Warrior" },
+              { badge_icon: "🚶", badge_name: "Daily Walker" },
+              { badge_icon: "🌍", badge_name: "Climate Hero" },
+              { badge_icon: "🏆", badge_name: "Weekly Champion" },
+            ],
+          };
+          updateDashboard(demoData);
+        }
+      }
+
+      function updateDashboard(data) {
+        updateGauge("green-score", data.user.green_score, 100);
+        updateGauge("aqi", data.metrics.aqi, 200);
+        updateGauge("noise", data.metrics.noise, 100);
+        updateGauge("traffic", data.metrics.traffic, 100);
+
+        // Update interpretations
+        document.getElementById("green-score-interpretation").textContent =
+          data.user.green_score >= 80
+            ? "Excellent! Keep it up!"
+            : data.user.green_score >= 60
+            ? "Good! You're making a difference."
+            : "Room for improvement. Try more eco-friendly routes.";
+
+        document.getElementById("aqi-interpretation").textContent =
+          data.metrics.aqi <= 50
+            ? "Good - Air quality is satisfactory"
+            : data.metrics.aqi <= 100
+            ? "Moderate - Acceptable air quality"
+            : "Poor - Consider reducing outdoor activity";
+
+        document.getElementById("noise-interpretation").textContent =
+          data.metrics.noise <= 50
+            ? "Quiet - Peaceful environment"
+            : data.metrics.noise <= 70
+            ? "Moderate - Typical urban noise"
+            : "Noisy - Consider quieter routes";
+
+        document.getElementById("traffic-interpretation").textContent =
+          data.metrics.traffic <= 30
+            ? "Light - Smooth travel"
+            : data.metrics.traffic <= 70
+            ? "Moderate - Some delays expected"
+            : "Heavy - Significant congestion";
+
+        document.getElementById(
+          "co2-saved"
+        ).textContent = `${data.user.co2_saved} kg`;
+        document.getElementById("clean-trips").textContent =
+          data.user.clean_trips;
+        document.getElementById(
+          "eco-streak"
+        ).textContent = `${data.streak} days`;
+        document.getElementById("eco-points").textContent =
+          data.user.eco_points;
+
+        document.getElementById("main-insight").textContent = data.insight;
+
+        const badgesContainer = document.getElementById("badges-container");
+        badgesContainer.innerHTML = data.badges
+          .map(
+            (badge) => `
+                  <div class="badge-item">
+                      <div class="badge-icon">${badge.badge_icon}</div>
+                      <div>${badge.badge_name}</div>
+                  </div>
+              `
+          )
+          .join("");
+      }
+
+      function updateGauge(id, value, max) {
+        const percentage = (value / max) * 100;
+        const offset = 283 - (283 * percentage) / 100;
+
+        const gauge = document.getElementById(`${id}-gauge`);
+        const text = document.getElementById(`${id}-text`);
+
+        if (gauge) gauge.style.strokeDashoffset = offset;
+        if (text) text.textContent = Math.round(value);
+      }
+
+      function toggleChatbot() {
+        const chatbot = document.getElementById("chatbot-window");
+        chatbot.style.display =
+          chatbot.style.display === "none" ? "flex" : "none";
+      }
+
+      async function sendChatMessage() {
+        const input = document.getElementById("chatbot-input");
+        const message = input.value.trim();
+
+        if (!message) return;
+
+        const messagesDiv = document.getElementById("chatbot-messages");
+
+        messagesDiv.innerHTML += `<div class="user-message">${message}</div>`;
+        input.value = "";
+
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+        try {
+          const response = await fetch("/api/chatbot", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message }),
+          });
+
+          const data = await response.json();
+          messagesDiv.innerHTML += `<div class="bot-message">${data.response}</div>`;
+          messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        } catch (error) {
+          console.error("Chatbot error:", error);
+          messagesDiv.innerHTML += `<div class="bot-message">Sorry, I'm having trouble right now. Please try again!</div>`;
+        }
+      }
+
+      function showRouteModal() {
+        document.getElementById("route-modal").style.display = "flex";
+      }
+
+      function closeRouteModal() {
+        document.getElementById("route-modal").style.display = "none";
+      }
+
+      async function planRoute() {
+        const startLoc = document.getElementById("start-location").value;
+        const endLoc = document.getElementById("end-location").value;
+        const routeType = document.querySelector(
+          'input[name="route-type"]:checked'
+        ).value;
+
+        if (!endLoc) {
+          alert("Please enter a destination");
+          return;
+        }
+
+        const startCoords = startLoc
+          ? parseCoords(startLoc)
+          : { lat: currentLat, lon: currentLon };
+        const endCoords = parseCoords(endLoc) || { lat: 18.5362, lon: 73.897 };
+
+        try {
+          const response = await fetch("/api/route/plan", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              start_lat: startCoords.lat,
+              start_lon: startCoords.lon,
+              end_lat: endCoords.lat,
+              end_lon: endCoords.lon,
+              route_type: routeType,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (data.route && data.route.legs && data.route.legs[0].points) {
+            if (map && typeof tt !== "undefined") {
+              const coordinates = data.route.legs[0].points.map((p) => [
+                p.longitude,
+                p.latitude,
+              ]);
+
+              if (map.getSource("route")) {
+                map.removeLayer("route");
+                map.removeSource("route");
+              }
+
+              map.addLayer({
+                id: "route",
+                type: "line",
+                source: {
+                  type: "geojson",
+                  data: {
+                    type: "Feature",
+                    properties: {},
+                    geometry: {
+                      type: "LineString",
+                      coordinates: coordinates,
+                    },
+                  },
+                },
+                layout: {
+                  "line-join": "round",
+                  "line-cap": "round",
+                },
+                paint: {
+                  "line-color": routeType === "eco" ? "#10b981" : "#3b82f6",
+                  "line-width": 5,
+                },
+              });
+
+              const bounds = new tt.LngLatBounds();
+              coordinates.forEach((coord) => bounds.extend(coord));
+              map.fitBounds(bounds, { padding: 50 });
+
+              showSection("map");
+            }
+          }
+
+          document.getElementById("route-results").innerHTML = `
+                  <div style="background: var(--light-bg); padding: 1.5rem; border-radius: 10px; margin-top: 1rem;">
+                      <h3>🎉 Route Planned Successfully!</h3>
+                      <p><strong>Distance:</strong> ${data.distance_km} km</p>
+                      <p><strong>Travel Time:</strong> ${
+                        data.travel_time_min
+                      } minutes</p>
+                      <p><strong>Route Type:</strong> ${
+                        data.route_type === "eco"
+                          ? "Eco-Friendly 🌿"
+                          : "Fastest ⚡"
+                      }</p>
+                      <p><strong>Eco Points Earned:</strong> +${
+                        data.eco_points_earned
+                      } points</p>
+                      ${
+                        data.co2_saved > 0
+                          ? `<p><strong>CO₂ Saved:</strong> ${data.co2_saved} kg 🌍</p>`
+                          : ""
+                      }
+                      <div style="background: var(--primary); color: white; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                          🏅 Great choice! You're making a positive impact! The route is now displayed on the map.
+                      </div>
+                  </div>
+              `;
+        } catch (error) {
+          console.error("Route planning error:", error);
+          alert("Failed to plan route. Please try again.");
+        }
+      }
+
+      function parseCoords(input) {
+        if (input.includes(",")) {
+          const parts = input.split(",");
+          return { lat: parseFloat(parts[0]), lon: parseFloat(parts[1]) };
+        }
+        return null;
+      }
+
+      async function loadCommunityPosts() {
+        try {
+          const response = await fetch("/api/community/posts");
+          const data = await response.json();
+
+          const feedDiv = document.getElementById("community-feed");
+          feedDiv.innerHTML = data.posts
+            .map(
+              (post) => `
+                  <div class="post-item">
+                      <div class="post-header">
+                          <div class="post-title">${post.title}</div>
+                          <span class="post-type-badge">${post.post_type.replace(
+                            "_",
+                            " "
+                          )}</span>
+                      </div>
+                      <p>${post.content}</p>
+                      <div class="post-meta">
+                          <i class="fas fa-map-marker-alt"></i> ${
+                            post.location
+                          } | <i class="fas fa-user"></i> ${post.username} | 
+                          ${new Date(post.created_at).toLocaleDateString()}
+                      </div>
+                      <button class="upvote-btn" onclick="upvotePost(${
+                        post.id
+                      })">
+                          <i class="fas fa-thumbs-up"></i> Upvote (${
+                            post.upvotes
+                          })
+                      </button>
+                  </div>
+              `
+            )
+            .join("");
+        } catch (error) {
+          console.error("Error loading posts:", error);
+        }
+      }
+
+      async function loadLeaderboard() {
+        try {
+          const response = await fetch("/api/leaderboard");
+          const data = await response.json();
+
+          const leaderboardDiv = document.getElementById("leaderboard-list");
+          leaderboardDiv.innerHTML = data.leaderboard
+            .map(
+              (user, index) => `
+                  <div class="leaderboard-item">
+                      <span class="rank">${
+                        index === 0
+                          ? "🥇"
+                          : index === 1
+                          ? "🥈"
+                          : index === 2
+                          ? "🥉"
+                          : index + 1
+                      }</span>
+                      <div style="flex: 1;">
+                          <strong>${user.username}</strong><br>
+                          <small>${user.eco_points} points | ${
+                user.co2_saved
+              } kg CO₂ saved</small>
+                      </div>
+                      <div style="text-align: right;">
+                          <div>Green Score: ${user.green_score}</div>
+                          <small>${user.streak_days} day streak</small>
+                      </div>
+                  </div>
+              `
+            )
+            .join("");
+        } catch (error) {
+          console.error("Error loading leaderboard:", error);
+        }
+      }
+
+      function showPostModal() {
+        document.getElementById("post-modal").style.display = "flex";
+      }
+
+      function closePostModal() {
+        document.getElementById("post-modal").style.display = "none";
+      }
+
+      async function submitPost() {
+        const title = document.getElementById("post-title").value;
+        const content = document.getElementById("post-content").value;
+        const location = document.getElementById("post-location").value;
+        const postType = document.getElementById("post-type").value;
+
+        if (!title || !content || !location) {
+          alert("Please fill in all fields");
+          return;
+        }
+
+        try {
+          await fetch("/api/community/post", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              title,
+              content,
+              location,
+              post_type: postType,
+            }),
+          });
+
+          closePostModal();
+          loadCommunityPosts();
+
+          document.getElementById("post-title").value = "";
+          document.getElementById("post-content").value = "";
+          document.getElementById("post-location").value = "";
+        } catch (error) {
+          console.error("Error creating post:", error);
+          alert("Failed to create post. Please try again.");
+        }
+      }
+
+      async function upvotePost(postId) {
+        try {
+          await fetch(`/api/community/upvote/${postId}`, { method: "POST" });
+          loadCommunityPosts();
+        } catch (error) {
+          console.error("Error upvoting:", error);
+        }
+      }
+
+      window.onclick = function (event) {
+        const routeModal = document.getElementById("route-modal");
+        const postModal = document.getElementById("post-modal");
+        if (event.target === routeModal) {
+          closeRouteModal();
+        }
+        if (event.target === postModal) {
+          closePostModal();
+        }
+      };
+
+      // Add event listeners for navigation
+      document.addEventListener("DOMContentLoaded", function () {
+        // Navigation links
+        document.querySelectorAll(".nav-link").forEach((link) => {
+          link.addEventListener("click", function () {
+            const sectionName = this.getAttribute("data-section");
+            if (sectionName) {
+              showSection(sectionName);
+            }
+          });
+        });
+
+        // Action cards
+        document
+          .querySelectorAll(".action-card[data-section]")
+          .forEach((card) => {
+            card.addEventListener("click", function () {
+              const sectionName = this.getAttribute("data-section");
+              if (sectionName) {
+                showSection(sectionName);
+              }
+            });
+          });
+
+        // Footer links
+        document.querySelectorAll("footer .nav-link").forEach((link) => {
+          link.addEventListener("click", function () {
+            const sectionName = this.getAttribute("data-section");
+            if (sectionName) {
+              showSection(sectionName);
+            }
+          });
+        });
+      });
+
+      window.onload = function () {
+        loadDashboard();
+
+        const insights = [
+          "AI-powered urban intelligence at your fingertips 🧠",
+          "Making cities greener, one route at a time 🌿",
+          "Your personal eco-assistant for sustainable living 🌍",
+        ];
+        document.getElementById("main-insight").textContent =
+          insights[Math.floor(Math.random() * insights.length)];
+      };
+    </script>
+  </body>
+</html>
